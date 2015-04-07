@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BES>
+    <Wizard>
+        <Title>Compliance Checklist Creation Wizard TEST: 6.15.11-John Singer, singerj@us.ibm.com, BigFix-IBM, 510-367-3654</Title>
+         <UIHooks Menu="Wi&amp;zards" NavBar="Wizards" LaunchType="Dialog"></UIHooks>
+
+        <DefaultPage>page0</DefaultPage>
+        <Page Name="page0">
+            <Title>Compliance Checklist Creation Wizard</Title>
+            <HTML>
+            <![CDATA[
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript" charset="utf-8">
+debugger;
+try {
+		var libPathname = EvaluateRelevance('if (in console context) then (following text of first "=" of (value whose (it contains "LOCALAPPDATA") of property results whose (name of property of it contains "EnvironmentVariableAppdata") of it) of bes computer whose (name of it as lowercase contains "grass") & "\\BigFix\\Enterprise Console") else nothing');
+	} catch(E) {
+					window.alert("There was an error importing the fixlet: " + E.message)		   
+		   }
+debugger;		   
+</script>
+
+<style type="text/css" title="currentStyle">
+@import "C:/cw/home/singerj/dev/complianceWizard/JavaScript/CUSTOM/DataTables-1.7.5/css/demo_page.css";
+
+@import "C:/cw/home/singerj/dev/complianceWizard/JavaScript/CUSTOM/DataTables-1.7.5/css/demo_table_jui.css";
+
+@import
+	"C:/cw/home/singerj/dev/complianceWizard/JavaScript/CUSTOM/jquery-ui-1.8.9/css/redmond/jquery-ui-1.8.9.custom.css";
+
+@import
+	"C:/cw/home/singerj/dev/complianceWizard/JavaScript/CUSTOM/DataTables-1.7.5/plugins/TableTools-2.0.0/css/TableTools_JUI.css";
+
+body {
+	font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+}
+
+.ui-dialog {
+	font-size: small;
+}
+</style> 
+
+<script src="/JavaScript/CUSTOM/jquery-1.4.4/jquery-1.4.4.min.js" type="text/javascript"></script>
+<script type="text/javascript">debugger;</script> 
+<script src="/JavaScript/CUSTOM/jquery-1.4.4/jquery-1.4.4.min.js" type="text/javascript"></script> 
+<script type="text/javascript" language="javascript" src="/JavaScript/CUSTOM/DataTables-1.7.5/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/JavaScript/CUSTOM/jquery-ui-1.8.9/jquery-ui-1.8.9.custom.min.js"></script>
+<script type="text/javascript" language="javascript" src="/JavaScript/CUSTOM/DataTables-1.7.5/plugins/TableTools-2.0.0/js/TableTools.js"></script>
+<script type="text/javascript" language="javascript" src="/JavaScript/CUSTOM/DataTables-1.7.5/plugins/TableTools-2.0.0/js/ZeroClipboard.js"></script>
+
+
+<script type="text/javascript" charset="utf-8">
+	var sTable;
+	var dTable;
+	var detailsTable;
+debugger;
+	$(document)
+			.ready(
+					function() {
+/*  						sTable = $("#srcTable").dataTable();
+ 					dTable = $("#dstTable").dataTable();
+*/ 					
+/* (click function used to be here)*/
+
+ 						sTable = $('#srcTable')
+								.dataTable(
+										{
+											"aoColumns" : [ null, null, null ],
+											"aaSorting" : [ [ 1, 'asc' ] ],
+											"bInfo" : true,
+											"bPaginate" : true,
+ 											"bStateSave" : false,
+											"bProcessing" : true,
+											"iDisplayLength" : 10
+										});
+
+ 						dTable = $('#dstTable').dataTable(
+										{
+											"aoColumns" : [ null, null, null ],
+											"aaSorting" : [ [ 1, 'asc' ] ],
+											"bInfo" : true,
+											"bPaginate" : true,
+											"bStateSave" : false,
+											"bProcessing" : true,
+											"iDisplayLength" : 10,
+										});
+
+						$("#srcTable tbody").click(function(event) {
+							row = event.target.parentNode;
+							detailsTable = sTable.fnGetData(row);
+							dTable.fnAddData(detailsTable, true);
+							sTable.fnDeleteRow(row, null, true);
+						});
+						
+						$("#dstTable tbody").click(function(event) {
+							row = event.target.parentNode;
+							detailsTable = dTable.fnGetData(row);
+							sTable.fnAddData(detailsTable, true);
+							dTable.fnDeleteRow(row, null, true);
+						});	
+						$("#resultsDiv").hide();						
+
+				});
+
+
+	function fnGetSelected(oTableLocal) {
+		var aReturn = new Array();
+		var aTrs = oTableLocal.fnGetNodes();
+
+		for ( var i = 0; i < aTrs.length; i++) {
+			if ($(aTrs[i]).hasClass('row_selected')) {
+				aReturn.push(aTrs[i]);
+			}
+		}
+		return aReturn;
+	}
+</script>
+</head>
+<body class="example_alt_pagination">
+	<!-- TheDataStore is a special object that persists across pages. Use it to save user inputs between pages -->
+	<div id="TheDataStore"
+		style="DISPLAY: none; LEFT: 0px; POSITION: absolute; TOP: 100%">
+		<!-- selected computer properites -->
+		<div id="Author">5.17.11-John Singer, singerj@us.ibm.com,
+			BigFix-IBM, 510-367-3654</div>
+		<div id="StandardsFilterSave"></div>
+		<div id="CategoryFilterSave"></div>
+		<div id="MimeFilterSave"></div>
+		<div id="fxlSelectedTuples"></div>
+		<div id="fxlCopiedTuples"></div>
+	</div>
+	(Click Arrow Icon To Toggle Controls Criteria)	
+	<img border="0" src="open.gif" alt="criteria toggle" onclick="toggleCriteria()" />
+	<div id="searchform">
+		<h1>
+			Build Compliance Checklist from Controls Library
+			</h3>
+			<p>Select the appropriate Security Guidance and Move Desired Controls from Source to Destination (or back) by 'clicking' each one:</p>
+			<hr>
+			<label for="cklistName">New Checklist Name: </label> <INPUT
+				id="cklistName" size=30 value="" /></br>
+			</br> <em style="font-weight: bold">Checklist Filters: </em></br> <label
+				for="srcStandards">Choose Security Standard Guidance-NIST: </label>
+			<select class="sourceStd" id="srcStandards">
+				<option name="securityGuidance">(none)</option>
+			</select> </br> <label for="srcCategory">Choose Filter Category: </label> <select
+				class="sCategory" id="srcCategory">
+				<option name="categories">(none)</option>
+			</select> </br> <label for="srcMimeField">Choose Custom Mime Filter
+				Category: </label> <select class="sMime" id="srcMimeField">
+				<option name="mimes">(none)</option>
+			</select> </br> <INPUT type="button" name="button3" value="Show Source Controls"
+				onClick="fillSrcControls(this)" /> <input type="checkbox"
+				name="findByRelvanceReqd" onclick="displayRelevanceBox()"
+				value="findByRelevance" unchecked />Show the Relevance? </br>
+
+			<div id="SrchByRel" class="indented" style="display: none">
+				<div id="RelTxt" class="indented">...or Select Controls via
+					Relevance (search Text):</div>
+				<INPUT id="computedRelevance" size=100 wrap="on"
+					value='(name of it,id of it) of fixlets whose site of it contains "/SitenameGoesHere/"'
+					onKeyDown="checkEnter()" /> </br> <span class="optionSpan"></span>
+				<BUTTON id="ButtonLookup" class="buttonStyle" type="button"
+					onclick="justDoLookup()">Find Fixlets By Relevance</BUTTON>
+				</br>
+				</br>
+			</div>
+			<div id="searchingDiv" style="display: none">
+				<strong>Searching...</strong>
+			</div>
+	</div>
+
+	<div id="searchDiv">
+	<p>(Move Desired Controls from Source to Destination (or back) by 'clicking' each one)</p>	
+		<table id="srcTable" class="display" width="100%">
+			<thead>
+				<tr>
+					<th width="20%">Source Fixlet ID</th>
+					<th width="60%">Source Fixlet Name</th>
+					<th width="20%">Applicable Computers</th>
+				</tr>
+			</thead>
+			</br>
+			</br>
+			<tbody id="tablebody">
+			</tbody>
+		</table>
+	</div>
+	<div id="resultsDiv">
+		<table id="dstTable" class="display" width="100%">
+			<br />
+			<br />
+			<div id="dstTitle">
+				<h3></h3>
+				<INPUT type="button" name="button4"
+					value="Accept Controls for This Checklist"
+					onClick="editSrcControls(this)" /> (Remember that you can remove
+				controls from the 'New Checklist' by 'clicking' them)
+			</div>
+			<thead>
+				<tr>
+					<th width="20%">Destination Fixlet ID</th>
+					<th width="60%">Destination Fixlet Name</th>
+					<th width="20%">Applicable Computers</th>
+				</tr>
+			</thead>
+			<tbody id="tablebody">
+			</tbody>
+		</table></br>
+		<div id="importOptsDiv" style="DISPLAY: none"></br>
+			<input type="checkbox" name="individualedit" onclick="individualEdit()" value="indivEdit" unchecked />Edit each
+			fixlet individually? </br> 
+				<input type="checkbox" name="prepostpendstring" onclick="individualEdit()"
+				value="prepostpend" unchecked />Prepend/(suffix)<label for="prependName">
+				</label> <INPUT id="prependName" size=30 value="" />   To Each Fixlet Name.  </br> 
+				<input type="checkbox" name="seqedit" onclick="seqEdit()" value="secEdit"
+				unchecked />Every Time You Find: <label for="seqEditSrchText"></label> 
+				<INPUT id="seqEditSrchText" size=30 value="(find)" /><label
+				for="seqEditReplaceText">,  Replace With: </label> <INPUT
+				id="seqEditReplaceText" size=30 value="(replace-with)" /><br/><br/>
+				<INPUT type="button" name="button4" value="Accept Controls for This Checklist"
+					onClick="editSrcControls(this)" />				
+		</div>
+	</div>
+
+	<div id="showDetails"></div>
+	<div id="showError"></div>
+	<script language="javascript" type="text/javascript">
+		var results;
+		var fxlArray;
+		var showOrHide = true;
+
+		function toggleCriteria() {
+            if (showOrHide) {
+            	showOrHide = false;            	
+            	$("img").attr("src","closed.gif");
+            } else {
+            	showOrHide = true;            	
+            	$("img").attr("src","open.gif");
+            }
+            $('#searchform').toggle(showOrHide);            
+		}
+		function seqEdit() {
+		}
+		function individualEdit() {
+		}
+		function checkEnter() {
+		}
+		function prependEdit() {
+		}
+		function editSrcControls(thingie) {
+			$("img").hide();
+			$("tcc").hide();
+			$("#searchDiv").hide();
+			$("#importOptsDiv").show();
+			$("#multiButton").attr('value', 'Import Fixlets to New Checklist');
+			$("#multiButton").click("doImport()");
+//			alert("Yep, Edit Processing Page");
+			debugger;
+			fxlArray = $('#fxlSelectedTuples').val();
+			doFinish(fxlArray);
+		}
+		function justDoLookup() {
+			alert("Yep, Lookup Via Relevance");
+			debugger;			
+		}
+		function doImport() {
+			alert("Yep, Importing now");
+			debugger;			
+		}
+		function fillSrcControls(t) {
+			try {
+				var r1 = '';
+				
+				$("#dstTitle h3").html($("#cklistName").val());
+				searchingDiv.style.display = 'block';
+				sTable.fnClearTable();
+				dTable.fnClearTable();
+				var stdsFilterSave = $('#srcStandards option:selected').val();
+				var catFilterSave = $('#srcCategory option:selected').val();
+				var mimeFilterSave = $('#srcMimeField option:selected').val();
+
+				var r2 = $('#srcStandards option:selected').val() != "(none)" ? 'and name of it contains "'
+						+ stdsFilterSave + '"'
+						: '';
+				r1 += $('#srcCategory option:selected').val() != "(none)" ? ' and category of it contains "'
+						+ catFilterSave.split("-")[1] + '"'
+						: '';
+				r1 += $('#srcMimeField option:selected').val() != "(none)" ? ' and name of mime field of it contains "'
+						+ mimeFilterSave + '"'
+						: '';
+
+				var searchRel = '(id of it as string & "|" & name of it & "|" & number of applicable computers of it as string) of fixlets whose (name of it as string as lowercase does not contain "control parameterization"'
+						+ r1
+						+ ') of bes sites whose (name of it as lowercase contains "checklist"'
+						+ (r2.length > 0 ? r2 + ')' : ')');
+
+				// finds all fixlets matching a specific name, obtains an array of fixlet objects
+				//       as (id|fixletname) & returns an HTML table which will be used to display these objects
+				var fTable = findFixlets(searchRel);
+				//            $("#SrcPaste").val(makeTable(findFixlets(searchRel)));
+
+			} catch (err) {
+
+				$("#showError").html(
+						'<p><strong>Error retrieving results: </strong>'
+								+ err.message + '</p>');
+				showError = $("#showError").dialog({
+					autoOpen : true,
+					resizable : false,
+					maxHeight : 700,
+					maxWidth : 700,
+					minHeight : 200,
+					minWidth : 200,
+					modal : true,
+					dialogClass : 'ui-state-error',
+					title : "Error",
+					buttons : {
+						"Ok" : function() {
+							$(this).dialog("close");
+						}
+					},
+					close : function() {
+						$(this).dialog("destroy");
+						$("#showError").html('');
+					}
+				});
+			}
+
+			$('#computedRelevance').val(searchRel);
+			searchingDiv.style.display = 'none';
+			toggleCriteria();
+			$("#resultsDiv").show();			
+		}
+
+		var gDebug = 0;
+		var tVar = 0;
+
+		var secGuidanceSrc = EvaluateRelevance('names whose (it as lowercase contains "checklist") of bes sites');
+		var categoryList = EvaluateRelevance('unique values whose (length of it > 1) of (item 0 of it &"-"& item 1 of it) of ((if (exists source id of it) then (concatenations "%0a" of (source id of it as string)) else ("<NA>")),(if (exists category of it) then (concatenations "%0a" of (category of it as string)) else ("<NA>"))) of fixlets whose (name of it as string as lowercase does not contain "control parameterization") of bes sites whose (name of it as lowercase contains "checklist")');
+
+		var mimeCustomFields = EvaluateRelevance('unique values of names of mime fields of fixlets whose (name of it as string as lowercase does not contain "control parameterization" ) of bes sites whose (name of it as lowercase contains "checklist")');
+		initialSettings();
+		function initialSettings() {
+			debugger;
+			try {
+			$('StandardsFilterSave').val("");
+			$('CategoryFilterSave').val("");
+			$('MimeFilterSave').val("");
+
+			fillSrcStandards();
+			fillCategories();
+			fillMimeFilter();
+			} catch (E) {
+				alert("Error during initialSettings(): "+E.message);
+			}
+
+			return true;
+		}
+
+		function fillSrcStandards() {
+			$.each(secGuidanceSrc, function(i) {
+				$('<option>' + secGuidanceSrc[i] + '</option>').appendTo(
+						'#srcStandards');
+			});
+		}
+		function fillCategories() {
+			$.each(categoryList, function(i) {
+				$('<option>' + categoryList[i] + '</option>').appendTo(
+						'#srcCategory');
+			});
+		}
+		function fillMimeFilter() {
+			$.each(mimeCustomFields, function(i) {
+				$('<option>' + mimeCustomFields[i] + '</option>').appendTo(
+						'#srcMimeField');
+			});
+		}
+		function makeTable(FixletsArr) {
+			debugger;
+		}
+		function findFixlets(sourceRelevance) {
+			var tgtArray = new Array();
+			//            var tarea = $("#SrcPaste");
+			debugger;
+			try {
+				tgtArray = EvaluateRelevance(sourceRelevance);
+
+			} catch (E) {
+				errorMessage("Problem finding fixlets '" + srchRel + "': "
+						+ E.description);
+				//                errFlg = true;
+			}
+
+			$.each(tgtArray, function(i) {
+				var tmp1 = tgtArray[i].split("|");
+				if (!tmp1[0] || !tmp1[1])
+					return true; // same as a continue
+
+				var obj = {
+					id : tmp1[0],
+					name : tmp1[1],
+					applic : tmp1[2]
+				}
+				tgtArray.push(obj);
+				sTable.fnAddData([ tmp1[0], tmp1[1], tmp1[2] ], true);
+
+				//                tarea.val(tarea.val() + tmp1[0]+"\n");
+				tVar = $(tmp1[0]).appendTo('#fxlSelectedTuples');
+				$("-").appendTo('#fxlSelectedTuples');
+				$(tmp1[1]).appendTo('#fxlSelectedTuples');
+			});
+			var errFlg = false;
+			return tgtArray;
+		}
+		function displayRelevanceBox() {
+			$('computedRelevance').val($('#SearchText'));
+			$('#SrchByRel').toggle();
+		}
+
+		function loadXML(dname) {
+			var XmlDoc, errFlg;
+			if (document.implementation
+					&& document.implementation.createDocument) {
+				XmlDoc = document.implementation.createDocument("", "", null);
+				XmlDoc.async = false;
+				XmlDoc.load(dname);
+				return XmlDoc;
+			}
+			// IE 5 and IE 6
+			else if (window.ActiveXObject) {
+				var arrSignatures = [ "MSXML2.DOMDocument.5.0",
+						"MSXML2.DOMDocument.4.0", "MSXML2.DOMDocument.3.0",
+						"MSXML2.DOMDocument", "Microsoft.XmlDom" ];
+
+				for ( var i = 0; i < arrSignatures.length; i++) {
+					errFlg = 0;
+					try {
+						XmlDoc = new ActiveXObject(arrSignatures[i]);
+					} catch (oError) {
+						errFlg = 1;
+					}
+
+					if (errFlg == 0) {
+						XmlDoc.async = false;
+						XmlDoc.load(dname);
+						return XmlDoc;
+					}
+				}
+			}
+			alert("Error loading document");
+			return null;
+		}
+
+		function doFinish(fxlArray) {
+			var doc, theTitle, tID, tA, tR, tS, tF, tX, theXML, lastFixlet = 0;
+			var XMLTemplate;
+			//                theXML = getItext(XMLToImport);
+			//                sxs = propagateCommonOuterFields(theXML);    
+			//                XMLtemplate = loadXML(XMLToImport);
+			//                XMLtemplate = loadXML(theXML);
+			//                Successively process the individual fixlets , creating and importing each of them                                                                                 
+			for (i = 0; i < fxlArray.length; i++) {
+				tID = fxlArray[i].id;
+				try {
+					//                        var newFxldoc = new XMLTemplate;
+					//                        newFxldoc = loadXML(XMLToImport);
+					//                        theXML = getItext(XMLToImport);
+					theXML = XMLToImport;
+					tX = propagateCommonOuterFields(theXML, tID);
+
+					//                        XMLtemplate = loadXML(tX);
+					newFxldoc = tX;
+					//                        var tgt = newFxldoc.getElementById("Fixlet");                            
+				} catch (E) {
+					errorMessage("Problem importing Fixlet Template XML"
+							+ E.description);
+					errFlg = true;
+				}
+
+				if (parseInt(tID) != lastFixlet) {
+					tR = fxlArray[i].rel;
+					tA = xlatAscript(tX, fxlArray[i].act);
+
+					tX = propagateCommonInnerFields(newFxldoc, tA, tR);
+					try {
+						newFxldoc = loadXML(tX);
+					} catch (E) {
+						errorMessage("Problem importing Fixlet Template XML, id: "
+								+ String(parseInt(tID)) + '-' + E.description);
+						errFlg = true;
+					}
+
+					lastFixlet = parseInt(tID);
+				}
+
+				theTitle = "Corrupt Patch Update Baseline ";
+				var results;
+				try {
+					results = ImportXML(tF);
+
+					if (results > 0) {
+						ButtonCancel.click();
+						errorMessage("New Baseline Created!");
+					}
+				} catch (E) {
+					window.alert("There was an error importing the fixlet: "
+							+ E.message);
+				}
+			}
+			return true;
+		}
+	</script>
+</body>
+
+]]>
+            </HTML>
+        </Page>
+        <Page Name="page1">
+             <Title>Data Page for CORRUPT PATCH Wizard</Title>
+<HTML>
+<![CDATA[
+<xml id="XMLToImport">
+<?xml version="1.0" encoding="UTF-8"?>
+<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
+    <Fixlet>
+        <Title>Corrupt Patch Template-#date#</Title>
+        <Description>Produced by Corrupt Patch Wizard - Id=#id# </Description>
+        <Relevance>#relevance#</Relevance>
+        <Source>Internal</Source>
+        <SourceReleaseDate>#date#</SourceReleaseDate>
+        <DefaultAction ID="Action1">
+            <Description>
+                <PreLink></PreLink>
+                <Link>here </Link>
+                <PostLink></PostLink>
+            </Description>
+            <ActionScript MIMEType="application/x-Fixlet-Windows-Shell">#actionscript#</ActionScript>
+        </DefaultAction>
+    </Fixlet>
+</BES> 
+</xml>
+]]>    
+</HTML>            
+        </Page>
+
+    </Wizard>
+</BES>
+

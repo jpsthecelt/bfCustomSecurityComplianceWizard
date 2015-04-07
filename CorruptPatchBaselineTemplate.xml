@@ -1,0 +1,37 @@
+		<xml id="xmlCPbaseline">
+			<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
+				<Baseline>
+					<Title>CORRUPT PATCH UPDATE:</Title>
+					<Description>#BaselineDescription#</Description>
+					<Relevance>true</Relevance>
+					<Source>Internal</Source>
+					<SourceReleaseDate>2009-08-06</SourceReleaseDate>
+					<BaselineComponentCollection>
+						<BaselineComponentGroup Name="CORRUPT PATCH UPDATE: M-S Fixlets">
+							<BaselineComponent Name="#ComponentName1#" IncludeInRelevance="true" SourceSiteURL="http://testsite.bigfix.com/cgi-bin/bfgather/ekatitest" SourceID="86" ActionName="Action1">
+								<ActionScript MIMEType="application/x-Fixlet-Windows-Shell">
+								<![CDATA[
+			
+									#ActionScript1#
+								]]>
+								</ActionScript>
+								<SuccessCriteria> <![CDATA[#SuccessCriteria1#]]></SuccessCriteria>
+								<Relevance><![CDATA[#Relevance1#]]></Relevance>
+							</BaselineComponent>
+							<BaselineComponent Name="#ComponentName2#" IncludeInRelevance="true" SourceSiteURL="http://testsite.bigfix.com/cgi-bin/bfgather/ekatitest" SourceID="86" ActionName="Action1">
+								<ActionScript MIMEType="application/x-Fixlet-Windows-Shell">
+								<![CDATA[
+			
+									#ActionScript2#
+
+								]]>
+								</ActionScript>
+								<SuccessCriteria> <![CDATA[#SuccessCriteria2#]]></SuccessCriteria>
+								<Relevance><![CDATA[#Relevance2#]]></Relevance>
+							</BaselineComponent>
+
+						</BaselineComponentGroup>
+					</BaselineComponentCollection>
+				</Baseline>				
+			</BES>
+		</xml>

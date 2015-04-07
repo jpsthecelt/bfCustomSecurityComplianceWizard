@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceBundles>
+<ResourceBundle locale="en_us" bundleName="ManageCustomContentWizard">
+
+<map><key>ProjectName</key><value>ManageCustomContentWizard</value></map>
+
+<map><key>WizardTitle</key><value>Create Custom Checklist</value></map>
+
+<map><key>Step1</key><value>Step 1: Enter Name of New Custom Checklist</value></map>
+<map><key>Step2</key><value>Step 2: Copy External Checklist(s)</value></map>
+<map><key>ChecklistName</key><value>New checklist name:</value></map>
+<map><key>Sources</key><value>Select external checklist(s) to copy:</value></map>
+<map><key>Finish</key><value>Copy {0} Checklist(s)</value></map>
+<map><key>RequiredField</key><value>This field is required.</value></map>
+<map><key>InvalidChars</key><value>This field contains invalid characters. Double quotes ("), tabs, and new lines/carriage returns are not allowed.</value></map>
+<map><key>EndsWithSpace</key><value>This field cannot end with a space.</value></map>
+<map><key>NameExists</key><value>There is already a custom site with this name.</value></map>
+<map><key>RequiredChecklist</key><value>Please select one or more checklist(s).</value></map>
+<map><key>AlertTitle</key><value>Warning!</value></map>
+<map><key>AlertMessage</key><value>The checklist(s) you have selected contain a large number of checks, which may cause the copying process to be slower than usual. Do you wish to continue anyway?</value></map>
+<map><key>InputErrors</key><value>Errors exist in one or more input fields.</value></map>
+<map><key>EmptyChecklist</key><value>The checklist(s) you have selected contain 0 checks.</value></map>
+<map><key>Error_Loading_Fixlets</key><value>Error loading checks from selected checklist(s): no checks found.</value></map>
+</ResourceBundle>
+</ResourceBundles>

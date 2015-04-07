@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BES>
+	<Wizard>
+		<Title>Compliance Checklist Creation Wizard TEST</Title>
+		 <UIHooks Menu="Wi&amp;zards" NavBar="Wizards" LaunchType="Dialog"></UIHooks>
+
+		<DefaultPage>page0</DefaultPage>
+		<Page Name="page0">
+			<Title>Compliance Checklist Creation Wizard</Title>
+			<HTML>
+			<![CDATA[	
+			<head>
+				<style type="text/css">.indented_txtipt {height:50px; width:400px}</style>
+			</head>
+				<body>
+					<!-- TheDataStore is a special object that persists pages. Use it to save user inputs between pages -->
+					<div id="TheDataStore" style="DISPLAY: none; LEFT: 0px; POSITION: absolute; TOP: 100%">
+						<!-- selected computer properites -->
+						<div id="FixletName"></div>
+						<div id="FixletID"></div>
+						<div id="FixletList"></div>
+						<div id="SearchText">name of it contains "CORRUPT PATCH"</div>
+						<div id="NewFixletName"></div>
+						<div id="DefaultAction1"></div>
+						<div id="RemoveRebootReqd"></div>							
+						<div id="securityGuidanceUsed"></div>
+					</div>
+					<div class="contents">
+						<div class="header">
+						<!--(should actually be something 1330x640) -->
+							<h1>Build Compliance Checklist from Controls Library</h1>
+						</div>
+						<div class="sectionBody">
+							<div class="sectionArea" >
+								<p>Select the Security Guidance and Controls Desired and copy them one-at-a-time into your checklist:</p> 
+    							<div style="MARGIN-Left: 8px; margin-top:10px" ><b></b></div>
+	    						<hr>
+    							<div id="GuidanceContainer" style="MARGIN-Left: 8px;">
+    								<div id="ErrorBox" class="errorbox control" style="display:none"></div>
+	    							<div id="WarnBox" class="warnbox control" style="display:none"></div>
+    								<div class="optionContainer">
+    									<form name="options">
+									        New Checklist Name:
+									        <INPUT id="cklistName" size=30 value="" /></br>
+										<INPUT type="button" name="button3" value="Display Source Controls" onClick="procSrcControls()" />
+										<select class="sourceStd" onclick="fillSourceStds()">
+											<option name="securityGuidance">Choose Security Standard Guidance</option>
+											<option></option>
+										</select>
+										<input type="checkbox" name="findByRelvanceReqd" onclick="displayRelevanceBox()" value="findByRelevance" unchecked/>Find Controls via Relevance? 
+										</br> 
+                                                                                        <input type="checkbox" name="category1" value="CATI" unhecked/>Select All CAT I Fixlets?</br>											
+                                                                                        <input type="checkbox" name="category2" value="CATII" unhecked/>Select All CAT II Fixlets?</br>											
+                                                                                        <input type="checkbox" name="category3" value="CATIII" unhecked/>Select All CAT III Fixlets?</br>											
+										<div id="SrchByRel" class="indented" style="display:none">
+											<div id="RelTxt" class="indented">	
+												...or Select Fixlets By Relevance (search Text):
+											</div>																					     												
+											<INPUT id="getItext(SearchText)" size=100 value='(name of it,id of it) of fixlets whose site of it contains "/SitenameGoesHere/"' onKeyDown="checkEnter()" />
+											</br>
+											<span class="optionSpan"></span>
+											<BUTTON id="ButtonLookup" class="buttonStyle" type="button" onclick="doLookup()">Find Fixlets By Relevance</BUTTON>
+											</br></br>
+										</div>
+    									<div id="srcControlsBox" class="paste control">
+											<textarea rows=5 cols=75 name="SrcPaste"  wrap="off">(Controls show up here)</textarea>
+											</br>
+    									</div>
+    									<form name="options">
+											<a>                        </a><INPUT type="button" name="button33" value="VVV" onClick="procSrcControls()" />
+											</br>
+			    							<div id="FxlTgt" class="paste control">
+												<textarea rows=5 cols=75 name="fxlPaste"  wrap="off">(fixlets get copied here)</textarea>	    									
+    										</div>			    																											
+
+											<input type="checkbox" name="DefaultAction1" value="defaultAction1" unchecked/>Edit Individual Fixlets?</br>
+											<input type="checkbox" name="RemoveRebootReqd" value="removeRebootReqd" unchecked/>Specify by Operating System?</br>
+	                                                                                <input type="checkbox" name="ControVersion" value="1.0" unchecked/>Start at Rev. 1.0?</br>
+
+
+										</form>	    																			
+									</div>
+									<div id="radiooptions">
+										</br>
+										<div id=CreateBaseline style="display:none">
+											<input type="checkbox" value="createBaseline"/>Incorporate Fixlets into Baseline? </br>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Nav Button Area, OD -->
+		 					<div id="buttonSection" class="buttonArea">
+		  					<HR/>
+		  					<div class="buttonSpacing">
+		  							<div id="CancelDiv" class="buttonSpacing"><BUTTON id="ButtonCancel" class="buttonStyle" type="button">Cancel Wizard</BUTTON></div>
+							</div>
+		  					</div>
+							</div>
+						</div>
+							
+				<script type="text/javascript" src="xlatRelevance.js"></script>
+				<script type="text/javascript" src="xlatSCriteria.js"></script>
+				<script type="text/javascript" src="simulation.js"></script>
+				<script language="JScript" >
+					var isMinIE4 = isMinIE5 = isMinIE5_5 = isMinIE6 = isMinIE7 = false;		
+					var sUserAgent = navigator.userAgent;				
+					var isOpera = (sUserAgent.indexOf("Opera")>0) ? true : false ;
+					var isIE = sUserAgent.indexOf("compatible") > -1 && sUserAgent.indexOf("MSIE") > -1 && !isOpera;
+					var isKHTML = sUserAgent.indexOf("KHTML") > -1 && sUserAgent.indexOf("Konqueror") > -1
+								  && sUserAgent.indexOf("AppleWebKit") > -1;   	
+					var isMoz = isFF = sUserAgent.indexOf("Gecko") > -1 && !isKHTML;	
+					var srchText = "";		
+					//	initialSettings();
+	                                //        debugger;
+					var secGuidanceSrc = EvaluateRelevance('names whose (it as lowercase contains "checklist") of bes sites');
+				</script>						
+				<script type="text/javascript" src="../js/jquery-1.3.2.js"></script>
+				<script type="text/javascript">
+				        debugger;
+					function fillSourceStds(formObj) { 
+					   $('#FxlTgt').toggle();
+					   debugger;
+					   var = $('#sourceGuidance').replace(srcStandards);
+					   alert( "yep, we filled in the security standard; fixlets follow");
+					   debugger;
+					}
+					function displayRelevanceBox() { 
+					   jQuery('#SrchByRel').toggle(); 
+					   debugger;
+					}
+					function procSrcControls(formObj) { alert( "yep, were processing the source-controls"); }
+				</script>
+<!--				<script language="JScript">
+-->	
+                                <script type="text/javascript">
+					var foundFixletsArr = new Array();	
+					var selectLMent = new Array();
+					var returnArr  = new Array();
+					debugger;
+					var templateXML;
+					function procPastedFxls(form) {	
+                                                debugger;					
+						var txt = form.fxlPaste.value;
+						SrchByRel.style.display = 'none';
+						FxlPasteBox.style.display = 'inline';				
+						var resultsArr = new Array();
+						//	var retn = new Array();
+						var reTuples =/(\d+)(\s+)(.*)/;
+						
+						try {
+							var fxls = txt.split("\n");								
+							for(var i = 0; i < fxls.length; i++){
+								if (isIE) {
+									reTuples.exec(fxls[i]);
+									retn[1] = RegExp.$1;
+									retn[3] = RegExp.$3;
+								} else {
+									var retn = fxls[i].match(reTuples);
+								}		
+
+									var srchRel = '(item 1 of it &"|"& item 2 of it &"|"& concatenation of item 3 of it as string) of (id of it,relevance of it,name of it, scripts of actions of it) of  bes fixlets whose ('+'id of it = '+retn[1]+')';
+									try {
+										resultsArr = EvaluateRelevance(srchRel);
+									} catch(E) {
+										errorMessage("Problem finding specified fixlets id='" + retn[1] + "': " + E.description);
+										errFlg = true;
+									}
+									// If there are multiple actions, we have multiple elements of the array with the same id							
+									for(var i = 0; i < resultsArr.length; i++){
+										var temp = resultsArr[i].split("|")
+										var obj = {id:retn[1], rel:temp[0], name:retn[3], act:temp[2]}
+										returnArr.push( obj )
+									}
+							}								
+							doFinish(returnArr);
+							return true;
+						} catch(e) {
+							window.alert("Error parsing pasted fixlets: " + e.message);
+							return  false;
+						}
+					}
+
+					function loadXML(dname) 
+					{
+						var XmlDoc, errFlg;
+						if (document.implementation && document.implementation.createDocument) {							
+							XmlDoc = document.implementation.createDocument("", "", null );
+							XmlDoc.async = false;
+							XmlDoc.load(dname);
+							return XmlDoc; 
+						}
+						// IE 5 and IE 6
+						else if (window.ActiveXObject) {
+							var arrSignatures = ["MSXML2.DOMDocument.5.0", "MSXML2.DOMDocument.4.0",
+							                     "MSXML2.DOMDocument.3.0", "MSXML2.DOMDocument",
+							                     "Microsoft.XmlDom" ];
+ 
+							for (var i=0; i<arrSignatures.length; i++) {
+								errFlg = 0;
+				                try {   										
+									XmlDoc = new ActiveXObject(arrSignatures[i]);
+			                    } catch (oError) {
+									errFlg = 1;
+			                    }	  
+			                    
+			                    if (errFlg == 0) {
+									XmlDoc.async=false;
+									XmlDoc.load(dname);
+									return XmlDoc;
+			                    }
+							}
+						}
+						alert("Error loading document");
+						return null;
+					}
+
+					function initialSettings() {							
+						if (isIE) {
+							var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+							reIE.test(sUserAgent);
+							var fIEVersion = parseFloat(RegExp["$1"]);
+							isMinIE4 = fIEVersion >= 4;
+							isMinIE5 = fIEVersion >= 5;
+							isMinIE5_5 = fIEVersion >= 5.5;
+							isMinIE6 = fIEVersion >= 6.0;
+							isMinIE7 = fIEVersion >= 7.0;
+							}
+						FxlPasteBox.style.display = 'none';
+						return true;							
+					}
+
+					function trim(str) {
+				   		str = str.replace(/^\s*|\s*$/g,"");
+				   		return str;
+					}
+
+					function checkEnter() {
+						//	if (window.event.keyCode == 13) {
+						//		doLookup();
+						//	}
+					}
+
+					function navToPage(){
+						if (SearchText.value == '') {
+							window.alert("Please enter a fixlet choice.");
+							//		return;
+						}
+
+						if (Fixletlist.innerHTML == '') {
+							if (doLookup()) {
+								window.alert("Please select a fixlet choice.");
+							}
+							return;
+						}
+
+						if (Fixletid.length == undefined || Fixletid.length == 1) {
+							if (!Fixletid.checked) {
+								window.alert("Please verify these are the fixlet options you want to select.");
+								return;
+							} else {
+								var mydata = Fixletid.value.split('|', 2);
+								FixletID.innerText = mydata[0];
+								FixletName.innerText = mydata[1];
+							}
+						} else if (Fixletid.length > 1) {
+							var selected = 0;
+							for (var i = 0; i < Fixletid.length; i++) {
+								if (Fixletid[i].checked) {
+									selected = 1;
+									var mydata = Fixletid[i].value.split('|', 2);
+									FixletID.innerText = mydata[0];
+									FixletName.innerText = mydata[1];
+									break;
+								}
+							}
+							if (!selected) {
+								window.alert("Please select a [set of] fixlets.");
+								return;
+							}
+						}
+
+						if (!DefaultAction1[0].checked && !RemoveRebootReqd[1].checked ) {
+							window.alert("Please select a Compliance Update operation to perform.");
+							return;
+						}
+
+						//	SetStoreFromControls();
+						window.navigate("linkpage:page3");
+					}
+
+					function isANumber(num)
+					{
+						if(!isNaN(trim(num)) && trim(num) != ''){
+								return true;
+							}else{
+								return false;
+							}
+					}
+
+					function disDiv(id,dis) {
+					    var theDiv = $(id);
+					    var theFields = theDiv.getElementsByTagName('input');
+					    for (var i=0; i < theFields.length;i++) {
+					    	theFields[i].disabled=dis;
+					    }
+					    theDiv.disabled=dis;
+					  }
+
+					// SetControlsFromStre() went here
+
+				  	// this function syncs TheDataStore with the users inputs, so that it may be referenced on other pages.
+					//		function SetStoreFromControls() { went here
+
+					function errorMessage(message){
+						ErrorBox.innerHTML	 =  message;
+						ErrorBox.style.display ='';
+					}
+					function warningMessage(message){
+						WarnBox.innerHTML = message;
+						WarnBox.style.display = ''
+					}
+					
+					function getItext (obj) { 
+						return (obj.innerText) ? obj.innerText 
+						: (obj.textContent) ? obj.textContent 
+						: ""; 
+						} 											
+												
+					function doLookup(){
+						WarnBox.style.display = 'none'
+						ErrorBox.style.display = 'none'
+						FxlPasteBox.style.display = 'none';																
+
+						var  srchText = getItext($("SearchText"));
+						var  datalookup = srchText;
+						//	alert(datalookup);
+						//	var datatolookup = trim(SearchText.value);								
+						if (datalookup == "") {
+							warningMessage("Please make a fixlet choice.");
+							return false;
+						}
+        				foundFixletsArr = findFixlets(datalookup);
+		            	if (foundFixletsArr.length <=0 ){
+							warningMessage('No matching fixlets were found "' + datalookup + '"')
+							return false;
+						} else {
+							Fixletlist.innerHTML = makeTable(foundFixletsArr);
+							return true;
+						}
+					}
+
+					// finds all fixlets matching a specific name, and retruns an array of fixlet objects
+					//       as (id|fixletname).
+					function findFixlets(data){
+						var errFlg = false;
+						var resultsArr = new Array();
+
+						var srchRel = '(id of it as string & "|" & name of it) of bes fixlets whose ('+data+')';
+						try {
+							resultsArr = EvaluateRelevance(srchRel);
+						} catch(E) {
+							errorMessage("Problem finding fixlets '" + srchRel + "': " + E.description);
+							errFlg = true;
+						}
+							
+						for(var i = 0; i < resultsArr.length; i++){
+							var temp = resultsArr[i].split("|")
+							var obj = {id:temp[0], name:temp[1]}
+							returnArr.push( obj )
+						}
+
+						return returnArr;
+					}
+
+					function makeTable(FixletsArr) {
+						var tableStr = '<form name="selectform">'+'<INPUT TYPE=SUBMIT VALUE="Process Fixlets" onclick="processFixlets(document.selectform.selections)">' 
+								+ '<table border=1>' + '<select name="selections"  multiple size=FixletsArr.length>';
+						
+						for (var i = 0; i < FixletsArr.length; i++) {
+							tableStr += '<option value="'+String(i)+'">'+FixletsArr[i].id+'-'+FixletsArr[i].name+'</option>';		
+							}
+						tableStr += "</select></table></form>";
+						tableStr += '<INPUT TYPE=SUBMIT VALUE="Process Fixlets" onclick="processFixlets(document.selectform.selections)">';
+					
+						return tableStr;
+					}
+					
+
+					// building fewer fixlets, but more complete information (id, relevance, script, etc).
+					function processFixlets(ob) {	
+						var resultsArr = new Array();
+						var finalArr = new Array();
+						var temp = new Array();							
+						var sxs = false;
+						var  srchString = getItext($("SearchText"));							
+						
+					    for (var i=0; i<ob.options.length; i++)
+					    {
+					        if (ob.options[i].selected) {
+					        	temp = ob.options[i].text.split("-");
+						        selectLMent.push(temp[0]);
+					        }
+					    }
+					    
+						for (var j=0; j<selectLMent.length; j++) {
+								var srchRel = '(item 1 of it &"|"& item 2 of it &"|"& concatenation of item 3 of it as string) of (id of it,relevance of it,name of it, scripts of actions of it) of  bes fixlets whose ('+srchString+' and id of it = '+selectLMent[j]+')';
+								try {
+									resultsArr = EvaluateRelevance(srchRel);
+								} catch(E) {
+									errorMessage("Problem finding fixlets '" + srchRel + "': " + E.description);
+									errFlg = true;
+								}
+						// If there are multiple actions, we have multiple elements of the array with the same id							
+								for(var i = 0; i < resultsArr.length; i++){
+									var temp = resultsArr[i].split("|")
+									var obj = {id:selectLMent[j], rel:temp[0], name:temp[1], act:temp[2]}
+									finalArr.push( obj )
+								}
+						}
+						sxs = doFinish(finalArr);
+						alert("Done finding the fixlets");
+						return true;
+					}
+					
+					function propagateCommonOuterFields(xmlText, id) {
+						var sText = /#date#/gi;
+						var curDate = new Date();
+						var retText = xmlText.replace(sText, curDate.toDateString());
+						var sText2 = /#id#/gi;
+						retText = retText.replace(sText2, String(id));
+						return retText;
+					}
+					
+					function propagateCommonInnerFields(xmlDoc, actscript, rnce) {							
+						var xD = xmlDoc.replace("#relevance#", rnce);	
+						var newAs = xD.replace("#actionscript#", actscript);	
+						return newAs;
+					}
+
+					function XPath(xmlDoc, path) {
+						if (isIE) {
+							return xmlDoc.selectNodes(xpath);
+						} else {
+							return xmlDoc.evaluate(path, xmlDoc, null, XPathResult.ANY_TYPE,null);								
+						}
+					}
+					
+					function xlatAscript(doc, ascript) {
+						var re = "action may require restart";
+												    							
+					    // remove a.m.r...
+					    if (ascript.length) {
+					    	newAscript = ascript.replace(/action may require restart/gm,"");
+					    }
+						return newAscript;
+					}
+					function doFinish(fxlArray){
+						var doc, theTitle, tID, tA, tR, tS, tF, tX, theXML, lastFixlet=0;
+						var XMLTemplate;
+					//	theXML = getItext(XMLToImport);
+					//	sxs = propagateCommonOuterFields(theXML);	
+					//	XMLtemplate = loadXML(XMLToImport);
+					//	XMLtemplate = loadXML(theXML);
+					//	Successively process the individual fixlets , creating and importing each of them 																				
+						for (i=0; i<fxlArray.length; i++) {
+							tID = fxlArray[i].id;
+							try {
+							//	var newFxldoc = new XMLTemplate;
+							//	newFxldoc = loadXML(XMLToImport);
+							//	theXML = getItext(XMLToImport);
+								theXML = XMLToImport;
+								tX = propagateCommonOuterFields(theXML,tID);	
+
+								// XMLtemplate = loadXML(tX);
+								newFxldoc = tX;
+								//	var tgt = newFxldoc.getElementById("Fixlet");							
+							} catch(E) {
+								errorMessage("Problem importing Fixlet Template XML" + E.description);
+								errFlg = true;
+							}								
+
+							if (parseInt(tID) != lastFixlet) {
+								tR = fxlArray[i].rel;								
+								tA = xlatAscript(tX,fxlArray[i].act);
+								
+								tX = propagateCommonInnerFields(newFxldoc, tA, tR);									
+								try { 
+									newFxldoc = loadXML(tX);
+								} catch(E) {
+									errorMessage("Problem importing Fixlet Template XML, id: "+String(parseInt(tID))+'-'+ E.description);
+									errFlg = true;
+								}								
+								
+								lastFixlet = parseInt(tID);
+							}
+
+							theTitle = "Corrupt Patch Update Baseline ";							
+							var results;
+							try {
+									results = ImportXML(tF);
+
+									if (results > 0) {
+										ButtonCancel.click();
+										errorMessage("New Baseline Created!");										
+									}
+							} catch (E) {
+								window.alert("There was an error importing the fixlet: " + E.message);
+							}
+						}								
+						return true;
+					}						
+																	
+					</script>
+			</body>	
+				]]>
+			</HTML>
+		</Page>
+		<Page Name="page1">
+  		   <Title>Data Page for CORRUPT PATCH Wizard</Title>
+<HTML>
+<![CDATA[
+<xml id="XMLToImport">
+<?xml version="1.0" encoding="UTF-8"?>
+<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
+	<Fixlet>
+		<Title>Corrupt Patch Template-#date#</Title>
+		<Description>Produced by Corrupt Patch Wizard - Id=#id# </Description>
+		<Relevance>#relevance#</Relevance>
+		<Source>Internal</Source>
+		<SourceReleaseDate>#date#</SourceReleaseDate>
+		<DefaultAction ID="Action1">
+			<Description>
+				<PreLink></PreLink>
+				<Link>here </Link>
+				<PostLink></PostLink>
+			</Description>
+			<ActionScript MIMEType="application/x-Fixlet-Windows-Shell">#actionscript#</ActionScript>
+		</DefaultAction>
+	</Fixlet>
+</BES> 
+</xml>
+]]>	
+</HTML>			
+		</Page>
+
+	</Wizard>
+</BES>

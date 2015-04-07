@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
+	<Baseline>
+		<Title>B1</Title>
+		<Description>Sample Baseline</Description>
+		<Relevance>true</Relevance>
+		<Source>Internal</Source>
+		<SourceReleaseDate>2009-08-06</SourceReleaseDate>
+		<BaselineComponentCollection>
+			<BaselineComponentGroup Name="Critical M-S Fixlets">
+				<BaselineComponent Name="Scan for Adobe Files" IncludeInRelevance="true" SourceSiteURL="http://testsite.bigfix.com/cgi-bin/bfgather/ekatitest" SourceID="86" ActionName="Action1">
+					<ActionScript MIMEType="application/x-Fixlet-Windows-Shell"><![CDATA[// Delete any existing files
+delete {pathname of parent folder of regapp "BESClient.exe" & "\adobescan.txt"}
+
+// Scan devices and verbose to Scan log file
+
+//appendfile {(( concatenation of pathnames of it as string as lowercase,(if exists version of it then version of it as string else "No Version") & "%0d%0a") of descendants of folders (names of drives whose (type of it = "DRIVE_FIXED")))}
+//move "__appendfile" "{pathname of parent folder of regapp "BESClient.exe" & "\adobescan.txt"}"
+
+
+dos del /q {"%22" & (pathname of parent folder of regapp "besclient.exe") & "\*adobescan.txt" & "%22"}
+Delete __createfile
+Delete find.bat
+Createfile until myend
+{(("dir /s /b " & it as string & "\*.* > " & "%22" &(pathname of parent folder of regapp "besclient.exe") & "\" & (preceding text of first ":" of it as string) & "AdobeScan.txt" & "%22" & "%0d%0a" ) of names of drives whose (type of it = "DRIVE_FIXED"))}
+
+myend 
+move __createfile find.bat
+runhidden find.bat
+
+// Set time of last scan to "now"
+setting "__BGC_AdobeScan"="{now}" on "{now}" for client]]></ActionScript>
+					<SuccessCriteria Option="RunToCompletion"></SuccessCriteria>
+					<Relevance>true</Relevance>
+				</BaselineComponent>
+				<BaselineComponent Name="MS08-015: Vulnerability in Microsoft Outlook Could Allow Remote Code Execution - Outlook 2007" IncludeInRelevance="true" SourceSiteURL="http://sync.bigfix.com/cgi-bin/bfgather/bessecurity" SourceID="801531" ActionName="Action1">
+					<ActionScript MIMEType="application/x-Fixlet-Windows-Shell"><![CDATA[download http://download.microsoft.com/download/8/1/0/8106fc14-307c-4fdc-8581-b286cff8dfbd/outlook2007-kb946983-fullfile-x86-glb.exe
+
+continue if {(size of it = 13612344 AND sha1 of it = "2e033129ead7ea3b99857806814d8d27dea90736") of file "outlook2007-kb946983-fullfile-x86-glb.exe" of folder "__Download"}
+
+wait __Download\outlook2007-kb946983-fullfile-x86-glb.exe /quiet /norestart
+
+run "{pathname of client folder of site "BESSupport" & "\RunQuiet.exe"}" "{pathname of client folder of site "BESSupport" & "\qchain.exe"}"
+
+action may require restart "2e033129ead7ea3b99857806814d8d27dea90736"
+]]></ActionScript>
+					<SuccessCriteria Option="OriginalRelevance"></SuccessCriteria>
+					<Relevance><![CDATA[((((((if( name of operating system starts with "Win" ) then platform id of operating system != 3 else false) AND ((language of version block of file "kernel32.dll" of system folder contains "English") OR (exists value of key "HKLM\System\CurrentControlSet\Control\Nls\MUILanguages" of registry))) AND (not exists key "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion" whose (exists value "ProductId" of it OR exists value "CommonFilesDir" of it) of registry AND not exists values "PROCESSOR_ARCHITECTURE" whose (it as string as lowercase = "ia64") of keys "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" of registry)) AND (exists file "msiexec.exe" whose (version of it >= "3.1") of system folder)) AND (exists key whose ((((length of it = 38) AND (it contains "000000FF1CE}") AND ((it = "0000" OR (hexadecimal integer it = 1033)) of last 4 of (first 19 of it)) AND ((it = "0011" OR it = "0012" OR it = "0013" OR it = "0014" OR it = "002E" OR it = "002F" OR it = "0030" OR it = "0031" OR it = "0033" OR it = "0035" OR it = "00CA") of last 4 of (first 14 of it))) of (name of it)) AND exists value "DisplayName" of it AND value "DisplayVersion" of it<"12.0.6215.1000") of key "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" of registry)) AND (exists regapp "outlook.exe" whose (version of it = "12" AND version of it < "12.0.6300.5000"))) AND (((exists file "Contab32.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Dlgsetp.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Emsmdb32.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Exsec32.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Mimedir.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Mspst32.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Olmapi32.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Omsmain.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Omsxp32.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Outlmime.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Outlook.exe" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Outlph.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Outlvbs.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Pstprx32.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Scanpst.exe" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Scnpst32.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it) OR (exists file "Scnpst64.dll" whose ((it = "12" AND it < "12.0.6300.5000") of version of it) of it)) of parent folder of (regapp "outlook.exe" whose (version of it="12")))]]></Relevance>
+				</BaselineComponent>
+				<BaselineComponent Name="MS08-052: Vulnerabilities in GDI+ Could Allow Remote Code Execution - Windows Server 2003 SP1/SP2 (v2, re-released 3/10/2009)" IncludeInRelevance="true" SourceSiteURL="http://sync.bigfix.com/cgi-bin/bfgather/bessecurity" SourceID="805252" ActionName="Action1">
+					<ActionScript MIMEType="application/x-Fixlet-Windows-Shell">download http://download.microsoft.com/download/F/D/0/FD04B854-24EB-4B49-BBFB-AD5D1FDC76F6/WindowsServer2003-KB938464-v2-x86-ENU.exe
+
+continue if {(size of it = 1309584 AND sha1 of it = "cf95eceae4f3d33d5d19a6b2e18bac24ab54f93e") of file "WindowsServer2003-KB938464-v2-x86-ENU.exe" of folder "__Download"}
+
+wait __Download\WindowsServer2003-KB938464-v2-x86-ENU.exe /quiet /norestart
+
+action may require restart "cf95eceae4f3d33d5d19a6b2e18bac24ab54f93e"</ActionScript>
+					<SuccessCriteria Option="OriginalRelevance"></SuccessCriteria>
+					<Relevance><![CDATA[(((((if( name of operating system starts with "Win" ) then platform id of operating system != 3 else false) AND ((language of version block of file "kernel32.dll" of system folder contains "English") OR (exists value of key "HKLM\System\CurrentControlSet\Control\Nls\MUILanguages" of registry))) AND (not exists key "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion" whose (exists value "ProductId" of it OR exists value "CommonFilesDir" of it) of registry AND not exists values "PROCESSOR_ARCHITECTURE" whose (it as string as lowercase = "ia64") of keys "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" of registry)) AND ((name of it = "Win2003" AND (service pack major version of it = 1 OR service pack major version of it = 2)) of operating system)) AND (not exists file "gdiplus.dll" whose ((service pack major version of operating system = 1 AND version of it >= "5.2.3790.3126") OR (service pack major version of operating system = 2 AND version of it >= "5.2.3790.4278")) of folders of folder "WinSxS" of windows folder)) AND ((not exists key "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates\Windows Server 2003\SP3\KB938464" of registry AND not exists key "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates\Windows Server 2003\SP3\KB938464-v2" of registry))]]></Relevance>
+				</BaselineComponent>
+				<BaselineComponent Name="MS08-069: Vulnerabilities in Microsoft XML Core Services Could Allow Remote Code Execution - XML Core Services 3.0 - Windows Server 2003 SP1/SP2" IncludeInRelevance="true" SourceSiteURL="http://sync.bigfix.com/cgi-bin/bfgather/bessecurity" SourceID="806913" ActionName="Action1">
+					<ActionScript MIMEType="application/x-Fixlet-Windows-Shell">download http://download.microsoft.com/download/f/d/f/fdf1b0cd-bd6b-41be-81b3-80be174e1698/WindowsServer2003-KB955069-x86-ENU.exe
+
+continue if {(size of it = 1092656 AND sha1 of it = "18269ed667c87d29f61cd54fc9775adb7ecf4d56") of file "WindowsServer2003-KB955069-x86-ENU.exe" of folder "__Download"}
+
+waithidden __Download\WindowsServer2003-KB955069-x86-ENU.exe /quiet /norestart
+
+action may require restart "18269ed667c87d29f61cd54fc9775adb7ecf4d56"
+</ActionScript>
+					<SuccessCriteria Option="OriginalRelevance"></SuccessCriteria>
+					<Relevance><![CDATA[(((((if( name of operating system starts with "Win" ) then platform id of operating system != 3 else false) AND ((language of version block of file "kernel32.dll" of system folder contains "English") OR (exists value of key "HKLM\System\CurrentControlSet\Control\Nls\MUILanguages" of registry))) AND (not exists key "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion" whose (exists value "ProductId" of it OR exists value "CommonFilesDir" of it) of registry AND not exists values "PROCESSOR_ARCHITECTURE" whose (it as string as lowercase = "ia64") of keys "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" of registry)) AND ((name of it = "Win2003" AND (service pack major version of it = 1 OR service pack major version of it = 2)) of operating system)) AND ((((exists file "msxml3.dll" whose (version of it < "8.100.1048.0") of it))) of ((system folder)))) AND ((not exists key "hklm\software\microsoft\updates\windows server 2003\sp3\kb955069" of registry))]]></Relevance>
+				</BaselineComponent>
+				<BaselineComponent Name="MS09-001: Vulnerabilities in SMB Could Allow Remote Code Execution - Windows Server 2003 SP1/SP2" IncludeInRelevance="true" SourceSiteURL="http://sync.bigfix.com/cgi-bin/bfgather/bessecurity" SourceID="900107" ActionName="Action1">
+					<ActionScript MIMEType="application/x-Fixlet-Windows-Shell">download http://download.microsoft.com/download/6/9/8/698F11AA-15C7-4BAF-818D-2BCC1704F202/WindowsServer2003-KB958687-x86-ENU.exe
+
+continue if {(size of it = 736632 AND sha1 of it = "7769ec8bf8869acd01fb8f9f63d79c23afbad5c6") of file "WindowsServer2003-KB958687-x86-ENU.exe" of folder "__Download"}
+
+waithidden __Download\WindowsServer2003-KB958687-x86-ENU.exe /quiet /norestart
+
+action may require restart "7769ec8bf8869acd01fb8f9f63d79c23afbad5c6"
+</ActionScript>
+					<SuccessCriteria Option="OriginalRelevance"></SuccessCriteria>
+					<Relevance><![CDATA[(((((if( name of operating system starts with "Win" ) then platform id of operating system != 3 else false) AND ((language of version block of file "kernel32.dll" of system folder contains "English") OR (exists value of key "HKLM\System\CurrentControlSet\Control\Nls\MUILanguages" of registry))) AND (not exists key "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion" whose (exists value "ProductId" of it OR exists value "CommonFilesDir" of it) of registry AND not exists values "PROCESSOR_ARCHITECTURE" whose (it as string as lowercase = "ia64") of keys "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" of registry)) AND ((name of it = "Win2003" AND (service pack major version of it = 1 OR service pack major version of it = 2)) of operating system)) AND ((((exists file "srv.sys" whose ((service pack major version of operating system = 1 AND version of it < "5.2.3790.3260") OR (service pack major version of operating system = 2 AND version of it < "5.2.3790.4425")) of it))) of ((folder "drivers" of system folder)))) AND ((not exists key "hklm\software\microsoft\updates\windows server 2003\sp3\kb958687" of registry))]]></Relevance>
+				</BaselineComponent>
+			</BaselineComponentGroup>
+		</BaselineComponentCollection>
+	</Baseline>
+</BES>
